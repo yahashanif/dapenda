@@ -1,29 +1,35 @@
+import 'package:dapenda/app/constant.dart';
+import 'package:dapenda/app/url.dart';
+import 'package:dapenda/model/data_peserta.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../cubit/berkas_cubit/berkas_ulang_cubit.dart';
+import '../../model/berkas.dart';
 import '../../themes/themes.dart';
+import '../../widgets/base_appbar.dart';
 import '../../widgets/box_gap.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/text-rapi.dart';
 
 class UnggahFalse extends StatefulWidget {
-  final Map data;
+  final DataPeserta dataPeserta;
+  final Berkas berkas;
 
-  const UnggahFalse({super.key, required this.data});
+  const UnggahFalse(
+      {super.key, required this.berkas, required this.dataPeserta});
   @override
   _UnggahFalseState createState() => _UnggahFalseState();
 }
 
 class _UnggahFalseState extends State<UnggahFalse> {
-  var data = {};
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: const BaseAppbar(
+        title: "Kembali",
         backgroundColor: blue,
-        title: Text(
-          'Kembali',
-          style: robotoM.copyWith(fontSize: 20, color: Colors.white),
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -49,7 +55,7 @@ class _UnggahFalseState extends State<UnggahFalse> {
                   Text(
                     'Validasi Berkas Gagal',
                     style: tahomaB.copyWith(
-                      fontSize: 24,
+                      fontSize: getActualY(y: 20, context: context),
                       color: Color(0XFFFC8276),
                     ),
                   ),
@@ -65,8 +71,8 @@ class _UnggahFalseState extends State<UnggahFalse> {
               ),
               const BoxGap(height: 8),
               Text(
-                data['alasan'] != null
-                    ? data['alasan']
+                widget.berkas.alasan != null
+                    ? widget.berkas.alasan!
                     : 'Belum diverifikasi, mohon untuk menunggu.',
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
@@ -76,23 +82,23 @@ class _UnggahFalseState extends State<UnggahFalse> {
               const BoxGap(height: 32),
               TextRapi(
                 data: 'Nama Penerima Pensiun',
-                value: data['name'] != null ? data['name'] : '',
+                value: widget.dataPeserta.nmPenerimaMp,
               ),
               TextRapi(
                 data: 'Nomor eDU',
-                value: data['edu'] != null ? data['edu'] : '',
+                value: widget.dataPeserta.noEdu,
               ),
               TextRapi(
                 data: 'Nomor Pensiunan / NIP',
-                value: data['nip'] != null ? data['nip'] : '',
+                value: widget.dataPeserta.nip,
               ),
               TextRapi(
                 data: 'Jenis Pensiun',
-                value: data['jenispen'] != null ? data['jenispen'] : '',
+                value: widget.dataPeserta.jnsPensiun,
               ),
               const BoxGap(height: 32),
               Text(
-                data['label1'] != null ? data['label1'] : '',
+                "Foto KTP",
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -104,14 +110,14 @@ class _UnggahFalseState extends State<UnggahFalse> {
                 height: 160,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(data['file_1']),
+                    image: NetworkImage(baseUrlImage + widget.berkas.file1!),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               const BoxGap(height: 16),
               Text(
-                data['label2'] != null ? data['label2'] : '',
+                "Foto Kartu KK",
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -123,7 +129,7 @@ class _UnggahFalseState extends State<UnggahFalse> {
                 height: 160,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(data['file_2']),
+                    image: NetworkImage(baseUrlImage + widget.berkas.file2!),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -134,22 +140,11 @@ class _UnggahFalseState extends State<UnggahFalse> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   height: 40,
-                  child: RaisedButton(
+                  child: CustomButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/unggah');
+                      context.read<BerkasUlangCubit>().setValue(true);
                     },
-                    child: Text(
-                      'ULANGI',
-                      style: robotoM.copyWith(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: green,
-                    shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
+                    text: "ULANGI",
                   ),
                 ),
               ),

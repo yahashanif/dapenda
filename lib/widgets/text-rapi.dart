@@ -1,5 +1,7 @@
 import 'package:dapenda/app/constant.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../themes/themes.dart';
@@ -13,25 +15,36 @@ class TextRapi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text(
-          data ?? '',
-          style: tahomaR.copyWith(
-            fontSize: getActualY(y: 14, context: context),
-            color: Colors.black,
+    return Container(
+      margin: EdgeInsets.only(bottom: getActualY(y: 8, context: context)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              data ?? '',
+              style: tahomaR.copyWith(
+                fontSize: getActualY(y: 14, context: context),
+                color: Colors.black,
+              ),
+            ),
           ),
-        ),
-        Text(
-          value ?? '',
-          style: tahomaR.copyWith(
-            fontSize: getActualY(y: 14, context: context),
-            color: Colors.grey,
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                value ?? '',
+                textAlign: TextAlign.end,
+                style: tahomaR.copyWith(
+                  fontSize: getActualY(y: 14, context: context),
+                  color: Colors.grey,
+                ),
+              ),
+            ),
           ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

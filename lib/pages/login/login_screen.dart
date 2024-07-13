@@ -1,8 +1,12 @@
 import 'package:dapenda/app/constant.dart';
 import 'package:dapenda/app/routes.dart';
+import 'package:dapenda/cubit/auth_cubit/auth_cubit.dart';
 import 'package:dapenda/widgets/box_gap.dart';
 import 'package:dapenda/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liveness_detection_flutter_plugin/index.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,13 +14,52 @@ import '../../themes/themes.dart';
 
 final _formKey = GlobalKey<FormState>();
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController controller = TextEditingController();
+  String _edu = '';
+  var maskFormatter = new MaskTextInputFormatter(
+      mask: '####-####-####', filter: {"#": RegExp(r'[0-9]')});
+
+  bool init = true;
+  @override
   Widget build(BuildContext context) {
-    var maskFormatter = new MaskTextInputFormatter(
-        mask: '####-####-####', filter: {"#": RegExp(r'[0-9]')});
+    _buildShowDiaolog(BuildContext context) {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.transparent,
+            ),
+          ),
+          content: Text(
+            'Maaf, Nomor e-Du Anda Salah.\nSilahkan Ulangi.',
+            style: tahomaR.copyWith(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            Container(
+                width: 70,
+                margin: EdgeInsets.only(right: 8, bottom: 4),
+                child: CustomButton(
+                    text: "OKE",
+                    onPressed: () {
+                      Navigator.pop(context);
+                    }))
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       body: Stack(
@@ -80,9 +123,14 @@ class LoginScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               TextFormField(
+                                controller: controller,
                                 inputFormatters: [maskFormatter],
-                                // onSaved: (val) =>
-                                //     _edu = val.replaceAll(new RegExp(r'-'), ''),
+                                onChanged: (value) {
+                                  _edu = controller.text
+                                      .replaceAll(new RegExp(r'-'), '');
+                                  setState(() {});
+                                  print(_edu);
+                                },
                                 keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   suffixIcon: Icon(Icons.person_outline),
@@ -111,14 +159,48 @@ class LoginScreen extends StatelessWidget {
                                           getActualX(x: 100, context: context),
                                       height:
                                           getActualY(y: 40, context: context),
-                                      child: CustomButton(
-                                          text: "Masuk",
-                                          onPressed: () {
+                                      child: BlocConsumer<AuthCubit, AuthState>(
+                                        listener: (context, state) {
+                                          print(state);
+                                          if (state is AuthSuccess) {
                                             Navigator.pushNamedAndRemoveUntil(
                                                 context,
                                                 homeRoute,
                                                 (route) => false);
-                                          })
+                                          } else if (state is AuthFailed) {
+                                            if (init) {
+                                              _buildShowDiaolog(context);
+                                              init = false;
+                                            }
+                                          }
+                                        },
+                                        builder: (context, state) {
+                                          return Row(
+                                            children: [
+                                              Expanded(
+                                                child: CustomButton(
+                                                    isLoading:
+                                                        state is AuthLoading,
+                                                    text: "Masuk",
+                                                    onPressed: () {
+                                                      print(_edu);
+                                                      // _edu = _edu.replaceAll(
+                                                      //     new RegExp(r'-'), '');
+                                                      context
+                                                          .read<AuthCubit>()
+                                                          .login(
+                                                              edu: _edu
+                                                                  .replaceAll(
+                                                                      '-', ''),
+                                                              tokenFcm:
+                                                                  'wahaha');
+                                                      init = true;
+                                                    }),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      )
 
                                       //  ElevatedButton(
                                       //   onPressed: () async {

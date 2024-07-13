@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
@@ -13,16 +14,19 @@ class BaseRepository {
   }) async {
     try {
       // log("baseUrl");
+      print(baseUrl);
+      print(service);
       // log(service);
       // log(jsonEncode(body));
       // log(body.toString());
       // Log(body);
       final url = param != null
-          ? Uri.https(baseUrl, service, param)
-          : Uri.https(baseUrl, service);
+          ? Uri.https(baseUrl, "/angkasa/api/${service}", param)
+          : Uri.https(baseUrl, "/angkasa/api/${service}");
       // print(createHeader(token: token!, url: service, method: "POST"));
       // print(createHeaderWithoutToken(url: service, method: 'POST'));
-      // print(url);
+      print("url");
+      print(url);
       final response = await http.post(url,
           body: body != null ? jsonEncode(body) : null,
           headers: token != null
@@ -45,12 +49,12 @@ class BaseRepository {
   }) async {
     try {
       // Log("service");
-      // print(service);
-      // Log(Uri.https(baseUrl, service, param));
+      print(service);
+      print(Uri.https(baseUrl, service, param));
       final url = param != null
-          ? Uri.https(baseUrl, service, param)
-          : Uri.https(baseUrl, service);
-      // Log(url);
+          ? Uri.https(baseUrl, "/angkasa/api/${service}", param)
+          : Uri.https(baseUrl, "/angkasa/api/${service}");
+      print(url.toString());
       final response = await http.get(isParse ? Uri.parse(service) : url,
           headers: token != null
               ? createHeader(

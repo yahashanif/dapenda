@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../app/constant.dart';
+import '../../model/data_auth.dart';
 import '../../themes/themes.dart';
 import '../../widgets/box_gap.dart';
 
 class DetailProfil extends StatelessWidget {
-  const DetailProfil({
-    super.key,
-  });
+  final User user;
+
+  const DetailProfil({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class DetailProfil extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Selamat Pagi,',
+                user.ucapan ?? 'Selamat Pagi,',
                 style: tahomaR.copyWith(
                   fontSize: getActualY(y: 24, context: context),
                 ),
@@ -42,7 +43,7 @@ class DetailProfil extends StatelessWidget {
                 height: 8,
               ),
               Text(
-                "Hanif",
+                user.nmPeserta ?? '',
                 style: tahomaB.copyWith(
                   fontSize: getActualY(y: 24, context: context),
                   color: const Color(0XFF757575),
@@ -52,7 +53,7 @@ class DetailProfil extends StatelessWidget {
                 height: 5,
               ),
               Text(
-                "193301288080",
+                user.noEdu ?? '',
                 style: tahomaR.copyWith(
                   fontSize: getActualY(y: 14, context: context),
                   color: const Color(0XFF757575),
@@ -75,9 +76,10 @@ class DetailProfil extends StatelessWidget {
             height: getActualY(y: 80, context: context),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
-              image: const DecorationImage(
+              image: DecorationImage(
                 image: NetworkImage(
-                    "https://www.missnumerique.com/blog/wp-content/uploads/reussir-sa-photo-de-profil-michael-dam.jpg"),
+                  user.urlFoto ?? '',
+                ),
                 fit: BoxFit.cover,
               ),
             ),

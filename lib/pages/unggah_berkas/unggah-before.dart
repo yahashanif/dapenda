@@ -1,23 +1,27 @@
 import 'dart:io';
 
+import 'package:dapenda/model/data_peserta.dart';
 import 'package:dapenda/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../model/data_auth.dart';
 import '../../themes/themes.dart';
+import '../../widgets/base_appbar.dart';
 import '../../widgets/text-rapi.dart';
 
 class UnggahBefore extends StatefulWidget {
-  final Map data;
+  final DataPeserta data;
+  final User user;
 
-  const UnggahBefore({super.key, required this.data});
+  const UnggahBefore({super.key, required this.data, required this.user});
   @override
   _UnggahBeforeState createState() => _UnggahBeforeState();
 }
 
 class _UnggahBeforeState extends State<UnggahBefore> {
-  File? gambar1;
-  File? gambar2;
+  PickedFile? gambar1;
+  PickedFile? gambar2;
   bool _loading = false;
 
   Future getImage1() async {
@@ -30,7 +34,7 @@ class _UnggahBeforeState extends State<UnggahBefore> {
     );
 
     setState(() {
-      // gambar1 = image;
+      gambar1 = image;
     });
   }
 
@@ -44,21 +48,17 @@ class _UnggahBeforeState extends State<UnggahBefore> {
     );
 
     setState(() {
-      // gambar2 = image;;
+      gambar2 = image;
+      ;
     });
   }
-
-  var data = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: BaseAppbar(
+        title: "Kembali",
         backgroundColor: blue,
-        title: Text(
-          'Kembali',
-          style: robotoM.copyWith(fontSize: 20, color: Colors.white),
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -87,25 +87,23 @@ class _UnggahBeforeState extends State<UnggahBefore> {
               SizedBox(height: 11),
               TextRapi(
                 data: 'Nama Penerima MP',
-                value: data['penerima'] != null ? data['penerima'] : '',
+                value: widget.data.nmPenerimaMp,
               ),
               TextRapi(
                 data: 'Nomor e-DU',
-                value: data['edu'] != null ? data['edu'] : '',
+                value: widget.data.noEdu,
               ),
               TextRapi(
                 data: 'Nomor Pensiunan',
-                value: data['nip'] != null ? data['nip'] : '',
+                value: widget.data.nip,
               ),
               TextRapi(
                 data: 'Jenis Pensiun',
-                value: data['jenispen'] != null ? data['jenispen'] : '',
+                value: widget.data.jnsPensiun,
               ),
               SizedBox(height: 32),
               Text(
-                data['label_1'] != null
-                    ? 'Unggah Berkas ' + data['label_1']
-                    : '',
+                widget.user.berkas1 != null ? 'Unggah Berkas ' : '',
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -115,7 +113,10 @@ class _UnggahBeforeState extends State<UnggahBefore> {
               Align(
                   alignment: Alignment.center,
                   child: gambar1 != null
-                      ? Text("gambar1.path.split('/').last")
+                      ? Image.file(
+                          File(gambar1!.path),
+                          width: MediaQuery.of(context).size.width,
+                        )
                       : SizedBox()),
               SizedBox(height: 8),
               Align(
@@ -131,9 +132,7 @@ class _UnggahBeforeState extends State<UnggahBefore> {
               ),
               SizedBox(height: 24),
               Text(
-                data['label_2'] != null
-                    ? 'Unggah Berkas ' + data['label_2']
-                    : '',
+                widget.user.berkas2 != null ? 'Unggah Berkas ' : '',
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -143,7 +142,10 @@ class _UnggahBeforeState extends State<UnggahBefore> {
               Align(
                   alignment: Alignment.center,
                   child: gambar2 != null
-                      ? Text("gambar2.path.split('/').last")
+                      ? Image.file(
+                          File(gambar2!.path),
+                          width: MediaQuery.of(context).size.width,
+                        )
                       : SizedBox()),
               SizedBox(height: 8),
               Align(

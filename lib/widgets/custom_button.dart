@@ -94,7 +94,8 @@ class CustomButton extends StatelessWidget {
                         text,
                         style: tahomaR.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: getActualY(y: 16, context: context),
+                          fontSize:
+                              getActualY(y: fontTextSize, context: context),
                           color: Colors.white,
                         ),
                       ),

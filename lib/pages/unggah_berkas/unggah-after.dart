@@ -1,29 +1,32 @@
+import 'package:dapenda/app/constant.dart';
+import 'package:dapenda/widgets/base_appbar.dart';
 import 'package:dapenda/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/data_auth.dart';
+import '../../model/data_peserta.dart';
 import '../../themes/themes.dart';
 import '../../widgets/text-rapi.dart';
 
 class UnggahAfter extends StatefulWidget {
+  final DataPeserta data;
+  final User user;
+
+  const UnggahAfter({super.key, required this.data, required this.user});
   @override
   _UnggahAfterState createState() => _UnggahAfterState();
 }
 
 class _UnggahAfterState extends State<UnggahAfter> {
-  var data = {};
-
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size.height;
-    data = ModalRoute.of(context)!.settings.arguments as Map;
+    // data = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: BaseAppbar(
+        title: "Kembali",
         backgroundColor: blue,
-        title: Text(
-          'Kembali',
-          style: robotoM.copyWith(fontSize: 20, color: Colors.white),
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -39,7 +42,7 @@ class _UnggahAfterState extends State<UnggahAfter> {
                     height: 50,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/success.png'),
+                        image: AssetImage('assets/images/success.png'),
                       ),
                     ),
                   ),
@@ -49,7 +52,7 @@ class _UnggahAfterState extends State<UnggahAfter> {
                   Text(
                     'Unggah Berhasil',
                     style: tahomaB.copyWith(
-                      fontSize: 20,
+                      fontSize: getActualY(y: 20, context: context),
                       color: Color(0XFF9AD25C),
                     ),
                   ),
@@ -62,8 +65,8 @@ class _UnggahAfterState extends State<UnggahAfter> {
                 'Terima Kasih Bapak / Ibu\nTelah mengunggah Berkas Data Ulang',
                 textAlign: TextAlign.center,
                 style: tahomaB.copyWith(
-                  fontSize: 18,
-                  color: Color(0XFF9AD25C),
+                  fontSize: getActualY(y: 14, context: context),
+                  color: const Color(0XFF9AD25C),
                 ),
               ),
               SizedBox(
@@ -71,32 +74,32 @@ class _UnggahAfterState extends State<UnggahAfter> {
               ),
               TextRapi(
                 data: 'Nomor e-DU',
-                value: data['edu'],
+                value: widget.data.noEdu,
               ),
               TextRapi(
                 data: 'Nama Pensiunan',
-                value: data['name'],
+                value: widget.user.nmPeserta,
               ),
               TextRapi(
                 data: 'Penerima MP',
-                value: data['penerima'],
+                value: widget.data.nmPenerimaMp,
               ),
               TextRapi(
                 data: 'Nomor Pensiunan',
-                value: data['nopen'],
+                value: widget.data.nip,
               ),
               TextRapi(
                 data: 'Jenis Pensiun',
-                value: data['jnspen'],
+                value: widget.data.jnsPensiun,
               ),
               SizedBox(
                 height: mediaQuery * 0.08,
               ),
               Text(
-                'Verifikasi akan memakan waktu 1x24 jam\n\nSilakan Cek kembali besok',
+                'Verifikasi akan memakan waktu 1x24 jam\nSilakan Cek kembali besok',
                 textAlign: TextAlign.center,
                 style: tahomaB.copyWith(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Color(0XFFFC8276),
                 ),
               ),

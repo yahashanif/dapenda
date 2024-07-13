@@ -1,25 +1,33 @@
-import 'package:eDapenda/shared/constant.dart';
-import 'package:eDapenda/widgets/text-rapi.dart';
+import 'package:dapenda/cubit/berkas_cubit/berkas_ulang_cubit.dart';
+import 'package:dapenda/model/berkas.dart';
+import 'package:dapenda/model/data_peserta.dart';
+import 'package:dapenda/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../themes/themes.dart';
+import '../../widgets/base_appbar.dart';
+import '../../widgets/text-rapi.dart';
 
 class UnggahTrue extends StatefulWidget {
+  final DataPeserta dataPeserta;
+  final Berkas berkas;
+
+  const UnggahTrue(
+      {super.key, required this.berkas, required this.dataPeserta});
+
   @override
   _UnggahTrueState createState() => _UnggahTrueState();
 }
 
 class _UnggahTrueState extends State<UnggahTrue> {
-  var data = {};
-
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      appBar: AppBar(
+      appBar: const BaseAppbar(
+        title: "Kembali",
         backgroundColor: blue,
-        title: Text(
-          'Kembali',
-          style: robotoM.copyWith(fontSize: 20, color: Colors.white),
-        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -35,7 +43,7 @@ class _UnggahTrueState extends State<UnggahTrue> {
                     height: 48,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/success.png'),
+                        image: AssetImage('assets/images/success.png'),
                       ),
                     ),
                   ),
@@ -53,24 +61,24 @@ class _UnggahTrueState extends State<UnggahTrue> {
               ),
               SizedBox(height: 48),
               TextRapi(
-                data: 'Penerima MP',
-                value: data['name'] != null ? data['name'] : '',
+                data: 'Nama Penerima Pensiun',
+                value: widget.dataPeserta.nmPenerimaMp,
               ),
               TextRapi(
-                data: 'Nomor e-DU',
-                value: data['edu'] != null ? data['edu'] : '',
+                data: 'Nomor eDU',
+                value: widget.dataPeserta.noEdu,
               ),
               TextRapi(
-                data: 'Nomor Pensiunan',
-                value: data['nip'] != null ? data['nip'] : '',
+                data: 'Nomor Pensiunan / NIP',
+                value: widget.dataPeserta.nip,
               ),
               TextRapi(
                 data: 'Jenis Pensiun',
-                value: data['jenispen'] != null ? data['jenispen'] : '',
+                value: widget.dataPeserta.jnsPensiun,
               ),
               SizedBox(height: 32),
               Text(
-                data['label1'] != null ? data['label1'] : '',
+                'Foto KTP',
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -82,14 +90,14 @@ class _UnggahTrueState extends State<UnggahTrue> {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(data['file_1']),
+                    image: NetworkImage(widget.berkas.file1!),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               SizedBox(height: 16),
               Text(
-                data['label2'] != null ? data['label2'] : '',
+                'Foto Kartu KK',
                 style: tahomaR.copyWith(
                   color: Color(0XFF757575),
                   fontSize: 14,
@@ -101,7 +109,7 @@ class _UnggahTrueState extends State<UnggahTrue> {
                 height: 200,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(data['file_2']),
+                    image: NetworkImage(widget.berkas.file2!),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -110,45 +118,29 @@ class _UnggahTrueState extends State<UnggahTrue> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    height: 40,
-                    child: RaisedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'OKE',
-                        style: robotoM.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                      color: green,
-                      shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.transparent),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      height: 40,
+                      child: CustomButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        text: "OKE",
                       ),
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    height: 40,
-                    child: RaisedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/unggah');
-                      },
-                      child: Text(
-                        'UPDATE BERKAS',
-                        style: robotoM.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                      color: blue,
-                      shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.transparent),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      height: 40,
+                      child: CustomButton(
+                        onPressed: () {
+                          // Navigator.pushReplacementNamed(context, '/unggah');
+                          context.read<BerkasUlangCubit>().setValue(true);
+                        },
+                        fontTextSize: 14,
+                        text: "UPDATE BERKAS",
                       ),
                     ),
                   ),

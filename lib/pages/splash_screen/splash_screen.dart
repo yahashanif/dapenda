@@ -1,4 +1,7 @@
+import 'package:dapenda/cubit/auth_cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
 import '../../app/constant.dart';
 import '../../app/routes.dart';
@@ -12,12 +15,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Box tokenBox = Hive.box('token');
+
+  enterApp() async {
+    Future.delayed(const Duration(seconds: 3), () {
+      print(tokenBox.get('token'));
+      if (tokenBox.get('token') != null) {
+        context.read<AuthCubit>().syncAkun(token: tokenBox.get('token'));
+        Navigator.pushNamedAndRemoveUntil(context, homeRoute, (route) => false);
+      } else {
+        Navigator.pushReplacementNamed(context, onBoardingRoute);
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, onBoardingRoute);
-    });
+    enterApp();
   }
 
   @override
